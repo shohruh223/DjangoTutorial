@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.apps.AppConfig',
+
+    'django_email_verification',
 ]
 
 MIDDLEWARE = [
@@ -89,13 +91,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+AUTH_USER_MODEL = 'app.User'
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
@@ -111,3 +113,17 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#------------------------------------------------------------------------------------------------------------------------
+
+
+# For Django Email Backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'shohruh.abd0823@gmail.com'
+EMAIL_HOST_PASSWORD = 'ekrvxavefheevvgu'  # os.environ['password_key'] suggested
+EMAIL_USE_TLS = True
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/'
