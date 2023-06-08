@@ -1,0 +1,8 @@
+
+{{ page_obj.has_previous}} <!--hozirgi sahifadan oldingiz sahifa bor bo'lsa true aks holda false qaytaradi-->
+{{ page_obj.has_next}} <!--hozirgi sahifadan keyingi sahifa bor bo'lsa true aks holda false qaytaradi-->
+{{page_obj.previous_page_number}} <!--bitta oldingi safiha raqami-->
+{{page_obj.next_page_number}} <!--bitta keyingi safiha raqami-->
+{{page_obj}} <!--nechinchi safidaligi va nechta sahifa borligin ko'rsatadi-->
+{{page_obj.paginator.num_pages}} <!--nechta sahifa borligini ko'rsatadi-->
+{{ page_obj.number }} <!--hozir nechinchi sahifaligini ko'rsatadi-->
