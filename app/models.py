@@ -1,3 +1,33 @@
+from django.core.files import File
 from django.db import models
+import qrcode
+from io import BytesIO
+from qrcode.image.styledpil import StyledPilImage
+from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer
+from qrcode.image.styles.colormasks import RadialGradiantColorMask
 
-# Create your models here.
+
+class QRCode(models.Model):
+    name = models.CharField(max_length=300)
+    qr_code = models.ImageField(upload_to='qr_code/', blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        QRCode = qrcode.QRCode()
+        QRCode.add_data(self.name)
+        QRCode.make()
+        QRimg = QRCode.make_image(
+            image_factory=StyledPilImage,
+            module_drawer=RoundedModuleDrawer(),
+            color_mask=RadialGradiantColorMask(),
+            embeded_image_path="media/logo.png"
+        )
+        fname = f"qr-code{str(self.id)}.png"
+        buffer = BytesIO()
+        QRimg.save(buffer, 'PNG')
+        self.qr_code.save(fname, File(buffer), save=False)
+        QRimg.close()
+        super().save(*args, **kwargs)
+
