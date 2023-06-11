@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete User</title>
+</head>
+<body>
+    <h1>Delete Object</h1>
+
+    <p>Are you sure you want to delete this object?</p>
+
+    <form method="POST" action="{% url 'delete-user' object.pk %}">
+      {% csrf_token %}
+      <input type="submit" value="Delete">
+    </form>
+</body>
+</html>
