@@ -2,6 +2,8 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import django.middleware.locale
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -27,11 +29,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.apps.AppConfig',
+
+    'modeltranslation',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # inter new middleware
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -94,14 +100,35 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# avvalo ushbu texnologiyani komputerimizga o'rnatib olamiz
+# sudo apt install gettext
+
+LANGUAGE_CODE = 'uz'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+USE_I10N = True
+
 USE_TZ = True
 
+# Language settings
+
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGES = (
+    ('uz', _('Uzbek')),
+    ('en', _('English')),
+)
+
+LOCALE_PATHS = [
+    BASE_DIR/'locale/',
+]
+
+
+# django-admin makemessages --all
+# django-admin compilemessages
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -116,3 +143,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+# Ushbu library ni ham o'rnatamiz
+# https://django-modeltranslation.readthedocs.io/en/latest/installation.html
