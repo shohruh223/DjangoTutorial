@@ -31,7 +31,7 @@ class ActivateEmailView(TemplateView):
                 level=messages.SUCCESS,
                 message="Your account successfully activated!"
             )
-            return redirect('index')
+            return redirect('login')
         else:
             return HttpResponse('Activation link is invalid!')
 

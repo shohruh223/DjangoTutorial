@@ -1,65 +1,53 @@
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash, logout
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth import logout, login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
-from django.views.generic import FormView
-
-from app.forms.forgot_password import ForgotPasswordForm
 from app.forms.login import LoginForm
 from app.forms.register import RegisterForm
 from app.forms.send_email_form import send_email, send_forget_password_mail
 from app.models import User
 
 
-# class LoginMixin:
-#     def get(self, request, *args, **kwargs):
-#         if request.user.is_authenticated:
-#             return redirect('index')
-#         return super().get(self,request, *args, **kwargs)
+def is_user_authenticated(user):
+    return user.is_authenticated
 
 
-class RegisterPage(FormView):
-    form_class = RegisterForm
-    template_name = 'app/register.html'
-    success_url = reverse_lazy('register')
-
-    def form_valid(self, form):
-        form.save()
-        send_email(form.data.get('email'), self.request, 'register')
-        messages.add_message(
-            self.request,
-            level=messages.WARNING,
-            message='Successfully send your email, please activate your profile'
-        )
-        return super().form_valid(form)
-
-
-class LoginPage(LoginView):
-    form_class = LoginForm
-    template_name = 'app/login.html'
-    success_url = reverse_lazy('index')
-
-    def form_valid(self, form):
-        return super().form_valid(form)
+def register(request):
+    if request.user.is_authenticated:
+        return redirect('index')
+    else:
+        if request.method == "POST":
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+                send_email(form.data.get('email'), request, 'register')
+                messages.add_message(
+                    request=request,
+                    level=messages.WARNING,
+                    message="Successfully send your email, please activate your profile"
+                )
+                return redirect('register')
+        else:
+            form = RegisterForm()
+    return render(request, 'app/register.html', {"form":form})
 
 
-# class ForgotPassword(FormView):
-#     form_class = ForgotPasswordForm
-#     template_name = 'app/forgot_password.html'
-#     success_url = reverse_lazy('forget_password')
-#
-#     def form_valid(self, form):
-#         send_email(form.data.get('email'), self.request, 'forgot_password')
-#         messages.add_message(
-#             self.request,
-#             level=messages.WARNING,
-#             message='Successfully send your email, Not email found with this email.'
-#         )
-#         return super().form_valid(form)
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('index')
+    else:
+        if request.method == "POST":
+            form = LoginForm(request=request, data=request.POST)
+            if form.is_valid():
+                user = form.get_user()
+                login(request, user)
+                return redirect('index')
+        else:
+            form = LoginForm()
+    return render(request, 'app/login.html', {"form":form})
 
+
+@login_required(login_url='login')
 def forget_password(request):
     try:
         if request.method == 'POST':
@@ -79,6 +67,7 @@ def forget_password(request):
     return render(request, 'app/forgot_password.html')
 
 
+@login_required(login_url='login')
 def change_password(request):
     user_id = request.user.id
     if request.method == 'POST':
@@ -100,6 +89,7 @@ def change_password(request):
     return render(request, 'app/change_password.html')
 
 
+@login_required(login_url='index')
 def logout_view(request):
     logout(request)
     return render(request, 'app/logout.html')

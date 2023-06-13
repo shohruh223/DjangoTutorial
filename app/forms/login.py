@@ -1,8 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm
-from django.core.exceptions import ValidationError
 from django.forms import EmailField, CharField
-from app.models import User
 
 
 class LoginForm(AuthenticationForm):
@@ -12,7 +10,8 @@ class LoginForm(AuthenticationForm):
     error_messages = {
        "invalid_login": (
             "This user is not active and this user email or password wrong"
-        )
+        ),
+        "inactive": ("This account is inactive."),
     }
 
     def clean(self):
