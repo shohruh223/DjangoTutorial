@@ -8,10 +8,6 @@ from app.forms.send_email_form import send_email, send_forget_password_mail
 from app.models import User
 
 
-def is_user_authenticated(user):
-    return user.is_authenticated
-
-
 def register(request):
     if request.user.is_authenticated:
         return redirect('index')
